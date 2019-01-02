@@ -38,27 +38,37 @@ def stochasticGradientDescent(X, y, theta, alpha, iters):
     temp = np.matrix(np.zeros(theta.shape))
     parameters = int(theta.ravel().shape[1])
     cost = np.zeros(iters)
-    train_indexs = [i for i in range(iters)]
+    train_indexs = [i for i in range(len(X))]
+    print('train_indexs',train_indexs)
     random.shuffle(train_indexs)
+    print('train_indexs after', train_indexs)
 
 
     for i in range(iters):
         # error = (X * theta.T) - y  batch
-        error = (X[train_indexs[i], :]*theta.T)-y[train_indexs, :]
+        sample_index = i % len(X)
+        #print('sample index ', sample_index, X.shape)
+        error = (X[train_indexs[sample_index], :]*theta.T)-y[train_indexs[sample_index]]
+        #error = (X[sample_index, :] * theta.T) - y[sample_index]
 
         for j in range(parameters):
             # term = np.multiply(error, X[:, j])
-            term = np.multiarray(error, X[train_indexs[i]])
+            term = np.multiply(error, X[train_indexs[sample_index], j])
+            #term = np.multiply(error, X[sample_index, j])
+            #print('term is ', term)
             #temp[0, j] = theta[0, j] - ((alpha / len(X)) * np.sum(term))
             temp[0, j] = theta[0, j] - (alpha * np.sum(term))
 
         theta = temp
         cost[i] = computeCost(X, y, theta)
 
+        if sample_index == len(X)-1:
+            random.shuffle(train_indexs)
+
     return theta, cost
 
 alpha = 0.01
-iters = 1000
+iters = 50000
 
 start = time.time()
 g, cost = stochasticGradientDescent(X, y, theta, alpha, iters)

@@ -12,7 +12,7 @@ data.plot(kind='scatter', x='Population', y='Profit', figsize=(12,8))
 plt.show()
 
 
-def  computeCost(X, y, theta):
+def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
 
